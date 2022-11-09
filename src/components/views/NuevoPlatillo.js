@@ -1,13 +1,27 @@
 import React from 'react'
+import { useFormik } from 'formik'
 
 const NuevoPlatillo = () => {
+
+  //Validar y leer los datos del formulario
+  const formik = useFormik({
+    initialValues: {
+      nombre: '',
+      precio: '',
+      categoria: '',
+      imagen: '',
+      descripcion: ''
+    },
+    onSubmit: datos => { console.log(datos) }
+  });
+
   return (
     <>
       <h1 className='text-3xl font-light mb-4' >Nuevo Platillo</h1>
 
       <div className='flex justify-center mt-10'>
         <div className='w-full max-w-3xl'>
-          <form>
+          <form onSubmit={ formik.handleSubmit }>
             <div className='mb-4'>
               <label className={ styleClasses.label } htmlFor='nombre'>Nombre</label>
               <input
@@ -15,6 +29,8 @@ const NuevoPlatillo = () => {
                 className={ styleClasses.input }
                 type='text'
                 placeholder='Nombre Platillo'
+                value={ formik.values.nombre }
+                onChange={ formik.handleChange }
               />
             </div>
             <div className='mb-4'>
@@ -25,6 +41,8 @@ const NuevoPlatillo = () => {
                 type='number'
                 placeholder='$20'
                 min='0'
+                value={ formik.values.precio }
+                onChange={ formik.handleChange }
               />
             </div>
             <div className='mb-4'>
@@ -33,6 +51,8 @@ const NuevoPlatillo = () => {
                 id='categoria'
                 className={ styleClasses.input }
                 name='categoria'
+                value={ formik.values.categoria }
+                onChange={ formik.handleChange }
               >
                 <option value=''>-- Seleccione --</option>
                 <option value='desayuno'>Desayuno</option>
@@ -46,9 +66,11 @@ const NuevoPlatillo = () => {
             <div className='mb-4'>
               <label className={ styleClasses.label } htmlFor='imagen'>Imagen</label>
               <input
-                id='precio'
+                id='imagen'
                 className={ styleClasses.input }
                 type='file'
+                value={ formik.values.imagen }
+                onChange={ formik.handleChange }
               />
             </div>
             <div className='mb-4'>
@@ -57,6 +79,8 @@ const NuevoPlatillo = () => {
                 id='descripcion'
                 className={ styleClasses.input + ' h-40' }
                 placeholder='Descripción del Platillo'
+                value={ formik.values.descripcion }
+                onChange={ formik.handleChange }
               ></textarea>
             </div>
 
