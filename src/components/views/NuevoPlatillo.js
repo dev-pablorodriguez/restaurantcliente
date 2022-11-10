@@ -1,5 +1,8 @@
 import React from 'react'
 import { useFormik } from 'formik'
+import * as Yup from 'yup'
+
+import Alerta from '../utilities/Alerta'
 
 const NuevoPlatillo = () => {
 
@@ -12,17 +15,32 @@ const NuevoPlatillo = () => {
       imagen: '',
       descripcion: ''
     },
+    validationSchema: Yup.object({
+      nombre: Yup.string()
+                  .min(3, 'Los platillos deben tener al menos 3 caracteres.')
+                  .required('El nombre del platillo es obligatorio.'),
+      precio: Yup.number()
+                  .min(1, 'Debes agregar un valor.')
+                  .required('El precio del platillo es obligatorio.'),
+      categoria: Yup.string()
+                  .required('La categoría es obligatoria.'),
+      descripcion: Yup.string()
+                  .min(10, 'La descripción debe ser más larga.')
+                  .required('La descripción es obligatoria.')
+            
+    }),
     onSubmit: datos => { console.log(datos) }
   });
 
   return (
     <>
-      <h1 className='text-3xl font-light mb-4' >Nuevo Platillo</h1>
+      <h1 className='text-3xl font-light' >Nuevo Platillo</h1>
 
       <div className='flex justify-center mt-10'>
         <div className='w-full max-w-3xl'>
           <form onSubmit={ formik.handleSubmit }>
-            <div className='mb-4'>
+
+            <div className='mb-5'>
               <label className={ styleClasses.label } htmlFor='nombre'>Nombre</label>
               <input
                 id='nombre'
@@ -31,9 +49,12 @@ const NuevoPlatillo = () => {
                 placeholder='Nombre Platillo'
                 value={ formik.values.nombre }
                 onChange={ formik.handleChange }
+                onBlur={ formik.handleBlur }
               />
+              { formik.touched.nombre && formik.errors.nombre && <Alerta message={ formik.errors.nombre }/> }
             </div>
-            <div className='mb-4'>
+
+            <div className='mb-5'>
               <label className={ styleClasses.label } htmlFor='precio'>Precio</label>
               <input
                 id='precio'
@@ -43,9 +64,12 @@ const NuevoPlatillo = () => {
                 min='0'
                 value={ formik.values.precio }
                 onChange={ formik.handleChange }
+                onBlur={ formik.handleBlur }
               />
+              { formik.touched.precio && formik.errors.precio && <Alerta message={ formik.errors.precio }/> }
             </div>
-            <div className='mb-4'>
+
+            <div className='mb-5'>
               <label className={ styleClasses.label } htmlFor='categoria'>Categoría</label>
               <select
                 id='categoria'
@@ -53,6 +77,7 @@ const NuevoPlatillo = () => {
                 name='categoria'
                 value={ formik.values.categoria }
                 onChange={ formik.handleChange }
+                onBlur={ formik.handleBlur }
               >
                 <option value=''>-- Seleccione --</option>
                 <option value='desayuno'>Desayuno</option>
@@ -62,8 +87,10 @@ const NuevoPlatillo = () => {
                 <option value='bebida'>Bebida</option>
                 <option value='postre'>Postre</option>
               </select>
+              { formik.touched.categoria && formik.errors.categoria && <Alerta message={ formik.errors.categoria }/> }
             </div>
-            <div className='mb-4'>
+
+            <div className='mb-5'>
               <label className={ styleClasses.label } htmlFor='imagen'>Imagen</label>
               <input
                 id='imagen'
@@ -71,9 +98,11 @@ const NuevoPlatillo = () => {
                 type='file'
                 value={ formik.values.imagen }
                 onChange={ formik.handleChange }
+                onBlur={ formik.handleBlur }
               />
             </div>
-            <div className='mb-4'>
+
+            <div className='mb-5'>
               <label className={ styleClasses.label } htmlFor='descripcion'>Descripción</label>
               <textarea
                 id='descripcion'
@@ -81,7 +110,9 @@ const NuevoPlatillo = () => {
                 placeholder='Descripción del Platillo'
                 value={ formik.values.descripcion }
                 onChange={ formik.handleChange }
+                onBlur={ formik.handleBlur }
               ></textarea>
+              { formik.touched.descripcion && formik.errors.descripcion && <Alerta message={ formik.errors.descripcion }/> }
             </div>
 
             <input
