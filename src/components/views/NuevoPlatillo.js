@@ -59,6 +59,7 @@ const NuevoPlatillo = () => {
   //Gestión de imágenes
   const handleUploadStart = () => {
     setImgProgress(0);
+    setImgUrl('');
     setIsImgUploading(true);
   }
 
@@ -68,14 +69,13 @@ const NuevoPlatillo = () => {
   }
 
   const handleUploadSuccess = async filename => {
-    setImgProgress(100);
-    setIsImgUploading(false);
-
     try {
 
       const url = await firebase.storage.ref('productos').child(filename).getDownloadURL();
-      console.log(url)
       setImgUrl(url);
+
+      setImgProgress(100);
+      setIsImgUploading(false);
       
     } catch (error) {
       console.log(error)
@@ -84,7 +84,6 @@ const NuevoPlatillo = () => {
 
   const handleProgress = progress => {
     setImgProgress(progress);
-    console.log(progress)
   }
 
 
@@ -159,6 +158,20 @@ const NuevoPlatillo = () => {
                 onUploadSuccess={ handleUploadSuccess }
                 onProgress={ handleProgress }
               />
+
+              { isImgUploading &&
+                <div className='h-8 relative w-full border mt-5'>
+                  <div style={{ width: `${ imgProgress }%` }} className='bg-green-500 absolute left-0 top-0 text-white px-2 text-sm h-8 flex items-center'>
+                  </div>
+                </div>
+              }
+
+              { imgUrl &&
+                <p className='bg-green-500 text-white p-1 text-center my-5'>
+                  La imagen se subió correctamente.
+                </p>
+              }
+
               {/* <input
                 id='imagen'
                 className={ styleClasses.input }
@@ -182,11 +195,13 @@ const NuevoPlatillo = () => {
               { formik.touched.descripcion && formik.errors.descripcion && <Alerta message={ formik.errors.descripcion }/> }
             </div>
 
-            <input
-              type='submit'
-              className='bg-gray-800 hover:bg-gray-900 w-full mt-5 p-2 text-white uppercase font-bold'
-              value='Agregar Platillo'
-            />
+            { !isImgUploading &&
+              <input
+                type='submit'
+                className='bg-gray-800 hover:bg-gray-900 w-full mt-5 p-2 text-white uppercase font-bold'
+                value='Agregar Platillo'
+              />
+            }
           </form>
         </div>
       </div>
