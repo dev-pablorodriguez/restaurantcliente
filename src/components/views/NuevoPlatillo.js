@@ -1,12 +1,18 @@
-import React, { useContext } from 'react'
+import React, { useState, useContext } from 'react'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import { FirebaseContext } from '../../firebase'
 import { useNavigate } from 'react-router-dom'
+import FileUploader from 'react-firebase-file-uploader'
 
 import Alerta from '../utilities/Alerta'
 
 const NuevoPlatillo = () => {
+  //State para las imágenes
+  const [ isImgUploading, setIsImgUploading ] = useState(false);
+  const [ imgProgress, setImgProgress ] = useState(0);
+  const [ imgUrl, setImgUrl ] = useState('')
+
   //Context con las operaciones de Firebase
   const { firebase } = useContext(FirebaseContext);
 
@@ -39,6 +45,7 @@ const NuevoPlatillo = () => {
     onSubmit: platillo => {
       try {
         platillo.existencia = true;
+        platillo.imagen = imgUrl;
 
         firebase.db.collection('productos').add(platillo);
 
@@ -48,6 +55,38 @@ const NuevoPlatillo = () => {
       }
     }
   });
+
+  //Gestión de imágenes
+  const handleUploadStart = () => {
+    setImgProgress(0);
+    setIsImgUploading(true);
+  }
+
+  const handleUploadError = err => {
+    setIsImgUploading(false);
+    console.log(err)
+  }
+
+  const handleUploadSuccess = async filename => {
+    setImgProgress(100);
+    setIsImgUploading(false);
+
+    try {
+
+      const url = await firebase.storage.ref('productos').child(filename).getDownloadURL();
+      console.log(url)
+      setImgUrl(url);
+      
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const handleProgress = progress => {
+    setImgProgress(progress);
+    console.log(progress)
+  }
+
 
   return (
     <>
@@ -109,14 +148,25 @@ const NuevoPlatillo = () => {
 
             <div className='mb-5'>
               <label className={ styleClasses.label } htmlFor='imagen'>Imagen</label>
-              <input
+              <FileUploader
+                id='imagen'
+                accept='image/*'
+                randomizeFilename
+                storageRef={ firebase.storage.ref('productos') }
+                className={ styleClasses.input }
+                onUploadStart={ handleUploadStart }
+                onUploadError={ handleUploadError }
+                onUploadSuccess={ handleUploadSuccess }
+                onProgress={ handleProgress }
+              />
+              {/* <input
                 id='imagen'
                 className={ styleClasses.input }
                 type='file'
                 value={ formik.values.imagen }
                 onChange={ formik.handleChange }
                 onBlur={ formik.handleBlur }
-              />
+              /> */}
             </div>
 
             <div className='mb-5'>
