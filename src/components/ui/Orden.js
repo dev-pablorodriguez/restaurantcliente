@@ -43,7 +43,7 @@ const Orden = ({ orden }) => {
                             max='30'
                             placeholder='20'
                             value={ tiempoEntrega }
-                            onChange={ event => setTiempoEntrega(parseInt(event.target.value)) }
+                            onChange={ event => event.target.value ? setTiempoEntrega(parseInt(event.target.value)) : 1 }
                         />
 
                         <button
@@ -54,6 +54,12 @@ const Orden = ({ orden }) => {
                             Definir Tiempo
                         </button>
                     </div>
+                )}
+
+                { orden.tiempoEntrega > 0 && (
+                    <p className='text-gray-700'>Tiempo de entrega:
+                        <span className='font-bold'> { orden.tiempoEntrega } minutos</span>
+                    </p>
                 )}
             </div>
         </div>
