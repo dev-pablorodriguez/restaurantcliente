@@ -18,6 +18,18 @@ const Orden = ({ orden }) => {
         }
     }
 
+    //Marcar como completado en Firebase
+    const completarOrden = () => {
+        try {
+            firebase.db.collection('ordenes')
+                .doc(orden.id)
+                .update({ completado: true })
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+
     return (
         <div className='sm:w-1/2 lg:w-1/3 px-2 mb-4'>
             <div className='p-3 shadow-md bg-white'>
@@ -49,7 +61,7 @@ const Orden = ({ orden }) => {
                         <button
                             type='submit'
                             onClick={ definirTiempo }
-                            className='bg-gray-800 hover:bg-gray-900 w-full mt-5 p-1 text-white uppercase font-bold'
+                            className='bg-gray-900 hover:bg-gray-800 w-full mt-5 p-1 text-white uppercase font-bold'
                         >
                             Definir Tiempo
                         </button>
@@ -60,6 +72,16 @@ const Orden = ({ orden }) => {
                     <p className='text-gray-700'>Tiempo de entrega:
                         <span className='font-bold'> { orden.tiempoEntrega } minutos</span>
                     </p>
+                )}
+
+                { !orden.completado && orden.tiempoEntrega > 0 && (
+                    <button
+                        type='submit'
+                        onClick={ completarOrden }
+                        className='bg-blue-900 hover:bg-blue-800 w-full mt-5 p-1 text-white uppercase font-bold'
+                    >
+                        Marcar como lista
+                    </button>
                 )}
             </div>
         </div>
